@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover" />
-<title>Friendly Padel — регистрация</title>
+<title>Friendly Padel - регистрация</title>
 <meta name="theme-color" content="#0f2438" />
 <meta property="og:title" content="Friendly Padel" />
 <meta property="og:description" content="Клуб дружеского падела. Добавь себя в список игроков." />
@@ -108,7 +108,7 @@
 
   <div class="card">
     <h2>Регистрация игрока</h2>
-    <p class="hint">Это старт нашего проекта. По этой базе мы построим своё приложение клуба: регистрация, статистика, рейтинг игроков, обратная связь по каждой игре, проведение турниров — и ещё много всего интересного. А начинается всё с простого: добавь себя в список.</p>
+    <p class="hint">Это старт нашего проекта. По этой базе мы построим своё приложение клуба: регистрация, статистика, рейтинг игроков, обратная связь по каждой игре, проведение турниров - и ещё много всего интересного. А начинается всё с простого: добавь себя в список.</p>
 
     <div class="avatar-pick">
       <label class="avatar" id="avatarBox" for="photo">
@@ -116,7 +116,7 @@
         <span class="cam">📷<br/>Фото</span>
       </label>
       <input type="file" id="photo" accept="image/*" />
-      <div class="avatar-note">Желательно реальное фото — чтобы все видели, кто есть кто, а не иконку. Не хочешь — можно без него.</div>
+      <div class="avatar-note">Желательно реальное фото, чтобы все видели, кто есть кто, а не иконку.</div>
     </div>
 
     <div class="field">
@@ -135,7 +135,7 @@
     <h3>Кто уже в клубе</h3>
     <span class="count" id="count">0</span>
   </div>
-  <p class="roster-sub">Список пополняется в реальном времени — здесь виден каждый, кто зарегистрировался.</p>
+  <p class="roster-sub">Список пополняется в реальном времени - здесь виден каждый, кто зарегистрировался.</p>
   <div class="list" id="list"><div class="skel">Загрузка списка…</div></div>
 
   <div class="foot">Friendly Padel Club · 2026</div>
@@ -207,7 +207,7 @@ $("#submit").addEventListener("click", async () => {
   try {
     let photo_url = null;
     try { photo_url = await uploadPhoto(); }
-    catch { /* фото не критично — сохраняем без него */ }
+    catch { /* фото не критично - сохраняем без него */ }
     const res = await fetch(REST + "/players", {
       method: "POST",
       headers: { ...H, "Content-Type": "application/json", Prefer: "return=minimal" },
