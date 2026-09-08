@@ -71,6 +71,7 @@
   /* ------- roster ------- */
   .roster-head{display:flex;align-items:center;justify-content:space-between;margin:30px 4px 12px}
   .roster-head h3{font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:#fff;margin:0;font-weight:700}
+  .roster-sub{margin:0 4px 14px;color:var(--muted);font-size:12px}
   .count{background:var(--lime);color:#0c1f33;font-weight:800;font-size:13px;padding:4px 12px;border-radius:20px}
   .list{display:flex;flex-direction:column;gap:10px}
   .player{display:flex;align-items:center;gap:14px;background:linear-gradient(180deg,var(--card2),var(--card));
@@ -107,7 +108,7 @@
 
   <div class="card">
     <h2>Регистрация игрока</h2>
-    <p class="hint">Добавь себя в список клуба. По этой базе будем считать статистику и делать разбор игр.</p>
+    <p class="hint">Это старт нашего проекта. По этой базе мы построим своё приложение клуба: регистрация, статистика, рейтинг игроков, обратная связь по каждой игре, проведение турниров — и ещё много всего интересного. А начинается всё с простого: добавь себя в список.</p>
 
     <div class="avatar-pick">
       <label class="avatar" id="avatarBox" for="photo">
@@ -115,30 +116,26 @@
         <span class="cam">📷<br/>Фото</span>
       </label>
       <input type="file" id="photo" accept="image/*" />
-      <div class="avatar-note">Фото по желанию · можно добавить позже</div>
+      <div class="avatar-note">Желательно реальное фото — чтобы все видели, кто есть кто, а не иконку. Не хочешь — можно без него.</div>
     </div>
 
     <div class="field">
       <label>Имя</label>
-      <input id="first" type="text" autocomplete="given-name" placeholder="Нуржан" maxlength="40" />
+      <input id="first" type="text" autocomplete="given-name" placeholder="Ваше имя" maxlength="40" />
     </div>
     <div class="field">
       <label>Фамилия</label>
       <input id="last" type="text" autocomplete="family-name" placeholder="Ваша фамилия" maxlength="40" />
     </div>
-    <div class="field">
-      <label>Позывной <span class="opt">(по желанию)</span></label>
-      <input id="nick" type="text" placeholder="Как зовут на корте" maxlength="30" />
-    </div>
-
     <button class="btn" id="submit">Добавить себя в клуб</button>
     <div class="msg" id="msg"></div>
   </div>
 
   <div class="roster-head">
-    <h3>Игроки клуба</h3>
+    <h3>Кто уже в клубе</h3>
     <span class="count" id="count">0</span>
   </div>
+  <p class="roster-sub">Список пополняется в реальном времени — здесь виден каждый, кто зарегистрировался.</p>
   <div class="list" id="list"><div class="skel">Загрузка списка…</div></div>
 
   <div class="foot">Friendly Padel Club · 2026</div>
@@ -198,7 +195,6 @@ async function uploadPhoto() {
 $("#submit").addEventListener("click", async () => {
   const first = $("#first").value.trim();
   const last = $("#last").value.trim();
-  const nick = $("#nick").value.trim();
   msg.className = "msg";
   if (!first || !last) {
     msg.className = "msg err";
@@ -215,12 +211,12 @@ $("#submit").addEventListener("click", async () => {
     const res = await fetch(REST + "/players", {
       method: "POST",
       headers: { ...H, "Content-Type": "application/json", Prefer: "return=minimal" },
-      body: JSON.stringify({ first_name: first, last_name: last, nickname: nick || null, photo_url })
+      body: JSON.stringify({ first_name: first, last_name: last, photo_url })
     });
     if (!res.ok) throw new Error("insert");
     msg.className = "msg ok";
     msg.textContent = "Готово! Ты в списке клуба 🎾";
-    $("#first").value = ""; $("#last").value = ""; $("#nick").value = "";
+    $("#first").value = ""; $("#last").value = "";
     photoFile = null; $("#avatarBox").classList.remove("filled"); $("#preview").src = "";
     loadPlayers();
   } catch (e) {
@@ -239,7 +235,7 @@ function esc(s){ return (s||"").replace(/[<>&"]/g, c => ({'<':'&lt;','>':'&gt;',
 async function loadPlayers() {
   const list = $("#list");
   try {
-    const res = await fetch(REST + "/players?select=first_name,last_name,nickname,photo_url&order=created_at.asc", { headers: H });
+    const res = await fetch(REST + "/players?select=first_name,last_name,photo_url&order=created_at.asc", { headers: H });
     const rows = await res.json();
     $("#count").textContent = rows.length;
     if (!rows.length) { list.innerHTML = '<div class="empty">Пока никого. Будь первым 🎾</div>'; return; }
@@ -247,9 +243,8 @@ async function loadPlayers() {
       const av = p.photo_url
         ? `<div class="pa"><img src="${esc(p.photo_url)}" alt=""></div>`
         : `<div class="pa"><span class="ini">${esc(initials(p.first_name, p.last_name))}</span></div>`;
-      const nk = p.nickname ? `<div class="nk">${esc(p.nickname)}</div>` : "";
       return `<div class="player"><div class="num">${i + 1}</div>${av}
-        <div class="info"><div class="nm">${esc(p.first_name)} ${esc(p.last_name)}</div>${nk}</div></div>`;
+        <div class="info"><div class="nm">${esc(p.first_name)} ${esc(p.last_name)}</div></div></div>`;
     }).join("");
   } catch (e) {
     list.innerHTML = '<div class="empty">Не удалось загрузить список</div>';
